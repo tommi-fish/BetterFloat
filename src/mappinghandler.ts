@@ -9,6 +9,19 @@ let priceMapping: CSGOTraderMapping = {};
 let cachedItems: ListingData[] = [];
 // history for one item
 let cachedHistory: HistoryData[] = [];
+let cachedSIHResponses: { [buff_name: string] : (SteaminventoryhelperResponse | null)} = {};
+
+type SteaminventoryhelperResponse = {
+    success: boolean;
+    items: {
+        [key: string]: {
+            buff163: {
+                price: number;
+                count: number;
+            };
+        };
+    };
+};
 
 export async function cacheHistory(data: HistoryData[]) {
     if (cachedHistory.length > 0) {
@@ -72,6 +85,51 @@ export async function getItemPrice(buff_name: string): Promise<{ starting_at: nu
         starting_at: priceMapping[buff_name]['buff163']['starting_at']['price'] ?? 0,
         highest_order: priceMapping[buff_name]['buff163']['highest_order']['price'] ?? 0,
     }
+}
+
+export function handleSpecialStickerNames(name: string): string {
+    if (name.includes('Ninjas in Pyjamas | Katowice 2015')) {
+        return 'Sticker | Ninjas in Pyjamas  | Katowice 2015';
+    } else if (name.includes('Vox Eminor | Katowice 2015')) {
+        return 'Sticker | Vox Eminor  | Katowice 2015';
+    } else if (name.includes('PENTA Sports | Katowice 2015')) {
+        return 'Sticker | PENTA Sports  | Katowice 2015';
+    } else if (name.indexOf('niko') > -1) {
+        return name.substring(0, name.lastIndexOf('|')) + ' ' + name.substring(name.lastIndexOf('|'), name.length);
+    }
+    return name;
+}
+
+export async function getInventoryHelperPrice(buff_name: string) {
+    if (cachedSIHResponses[buff_name]) {
+        console.log(`[BetterFloat] Returning cached steaminventoryhelper response for ${buff_name}: `, cachedSIHResponses[buff_name]);
+        return cachedSIHResponses[buff_name]?.items[buff_name]?.buff163?.price ?? null;
+    }
+    console.log(`[BetterFloat] Attempting to get price for ${buff_name} from steaminventoryhelper`);
+    const response = await fetch('https://api.steaminventoryhelper.com/v2/live-prices/getPrices', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            appId: 730,
+            markets: ['buff163'],
+            items: [buff_name],
+        }),
+    });
+    const SIHresponse = await response.json() as SteaminventoryhelperResponse;
+    console.log(`[BetterFloat] Steaminventoryhelper response for ${buff_name}: `, SIHresponse);
+    cachedSIHResponses[buff_name] = SIHresponse;
+    return SIHresponse.items[buff_name]?.buff163?.price ?? null;
+    // if (data.success) {
+    //     console.log(`[BetterFloat] Steaminventoryhelper returned success for ${buff_name}`);
+    //     cachedSIHResponses[buff_name] = data;
+    //     console.log(data?.items[buff_name]?.buff163?.price);
+    // } else {
+    //     console.log(`[BetterFloat] Steaminventoryhelper did not return success for ${buff_name}`);
+    //     cachedSIHResponses[buff_name] = null;
+    //     // return null;
+    // }
 }
 
 

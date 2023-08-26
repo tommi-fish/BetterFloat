@@ -62,20 +62,7 @@ async function firstLaunch() {
 
 async function initSettings() {
     extensionSettings = <ExtensionSettings>{};
-    chrome.storage.local.get(
-        {
-            // default values
-            buffprice: true,
-            autorefresh: true,
-            priceReference: 1,
-            refreshInterval: 30,
-            showSteamPrice: false,
-            stickerPrices: true,
-            showBuffDifference: true,
-            listingAge: 0,
-            showTopButton: true,
-        },
-        (data) => {
+    chrome.storage.local.get((data) => {
             if (data.buffprice) {
                 extensionSettings.buffprice = Boolean(data.buffprice);
             }
@@ -107,6 +94,7 @@ async function initSettings() {
     );
 
     // wait for settings to be loaded, takes about 1.5 seconds
+    // TODO: find a better way to do this
     await new Promise<void>((resolve) => {
         setTimeout(() => {
             resolve();
@@ -637,4 +625,5 @@ let lastRefresh = 0;
 // mutation observer active?
 let isObserverActive = false;
 
+console.log('[BetterFloat] Content script loading...');
 init();

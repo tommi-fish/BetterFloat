@@ -1,36 +1,38 @@
 {
-	"name": "BetterFloat",
-	"author": "Rums",
-	"version": "1.3.1.1",
-	"version_name": "1.3.1.1",
-	"description": "Enhance your experience on CSFloat.com",
-	"manifest_version": 3,
-	"host_permissions": ["*://prices.csgotrader.app/*", "*://csfloat.com/*"],
-	"background": {
-		"service_worker": "js/background.js"
-	},
-	"content_scripts": [
-		{
-			"matches": ["https://csfloat.com/*", "https://csgofloat.com/*"],
-			"js": ["js/content_script.js"],
-			"css": ["css/stylesheet.css"],
-			"run_at": "document_idle"
-		},
-		{
-			"matches": ["https://csfloat.com/*", "https://csgofloat.com/*"],
-			"js": ["js/injectionhandler.js"],
-			"run_at": "document_start"
-		}
-	],
-	"icons": {
-		"128": "public/betterfloat_logo128.png"
-	},
-	"action": {
-		"default_popup": "/html/index.html"
-	 },
-	"permissions": ["storage"],
-    "web_accessible_resources": [ {
-       "matches": [ "https://csfloat.com/*", "https://csgofloat.com/*" ],
-       "resources": [ "public/buff_favicon.png", "public/clock-solid.svg", "public/chevron-up-solid.svg", "js/inject.js"]
-    } ]
+    "name": "BetterFloat",
+    "author": "Rums",
+    "version": "1.3.2.1",
+    "version_name": "1.3.2.1",
+    "description": "Enhance your experience on CSFloat.com",
+    "manifest_version": 3,
+    "host_permissions": ["*://prices.csgotrader.app/*", "*://csfloat.com/*", "https://api.steaminventoryhelper.com/*"],
+    "background": {
+        "service_worker": "js/background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://csfloat.com/*", "https://csgofloat.com/*"],
+            "js": ["js/content_script.js"],
+            "css": ["css/stylesheet.css"],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": ["https://csfloat.com/*", "https://csgofloat.com/*"],
+            "js": ["js/injectionhandler.js"],
+            "run_at": "document_start"
+        }
+    ],
+    "icons": {
+        "128": "public/betterfloat_logo128.png"
+    },
+    "action": {
+        "default_popup": "/html/index.html"
+    },
+    "permissions": ["storage"],
+    "web_accessible_resources": [
+        {
+            "matches": ["https://csfloat.com/*", "https://csgofloat.com/*"],
+            "resources": ["public/buff_favicon.png", "public/clock-solid.svg", "public/chevron-up-solid.svg", "js/inject.js"]
+        }
+    ]
 }
